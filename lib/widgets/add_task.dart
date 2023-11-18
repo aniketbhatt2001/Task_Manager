@@ -85,7 +85,8 @@ class _AddTaskState extends State<AddTask> {
                         var now = DateTime.now();
 
                         // Format the date-time as a string in "MM-dd" format
-                        var formattedDate = DateFormat('MMMM dd').format(now);
+                        var formattedDate = now.toIso8601String();
+                        //DateFormat('MMMM dd').format(now);
                         final task = Task(
                             dateTime: formattedDate,
                             desc: descClr.text,

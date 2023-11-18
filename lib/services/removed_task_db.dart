@@ -26,14 +26,13 @@ class RemovedDBService {
       onCreate: (db, version) {
         // Run the CREATE TABLE statement on the database.
         return db.execute(
-          'CREATE TABLE tasks(id TEXT PRIMARY KEY, title TEXT, isDone TEXT , deleted TEXT , desc TEXT, dateTime TEXT )',
+          'CREATE TABLE tasks(id TEXT PRIMARY KEY, title TEXT, isDone TEXT , deleted TEXT , desc TEXT, dateTime TEXT , fav TEXT)',
         );
       },
       // Set the version. This executes the onCreate function and provides a
       // path to perform database upgrades and downgrades.
       version: 1,
     );
-
 
     return database;
   }
@@ -52,7 +51,6 @@ class RemovedDBService {
       task.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-  
   }
 
 // A method that retrieves all the tasks from the tasks table.
@@ -72,6 +70,7 @@ class RemovedDBService {
         title: maps[i]['title'] as String,
         isDone: maps[i]['isDone'] == '1' ? true : false,
         deleted: maps[i]['deleted'] == '1' ? true : false,
+        fav: maps[i]['fav'] == '1' ? true : false,
       );
     });
   }
@@ -106,11 +105,10 @@ class RemovedDBService {
       // Access specific information, for example, the task's name:
       String taskName = taskInfo['title'];
       // Use the fetched information as needed.
-  
+
       return Task.fromMap(taskInfo);
     } else {
       // Task with the specified ID not found.
-      
     }
   }
 

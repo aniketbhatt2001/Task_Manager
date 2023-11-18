@@ -31,7 +31,10 @@ class DeleteTaskEvent extends TaskEvent {
   List<Object> get props => [task];
 }
 
-class FetchTasksEvent extends TaskEvent {}
+class FetchTasksEvent extends TaskEvent {
+
+}
+
 
 class DeletePermanentlyTaskEvent extends TaskEvent {
   final Task task;

@@ -4,6 +4,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tasks_app/screens/completed_task.dart';
+import 'package:flutter_tasks_app/screens/fav_tasks.dart';
 
 import 'package:flutter_tasks_app/screens/tasks_screen.dart';
 
@@ -25,6 +26,7 @@ class _TabScreenState extends State<TabScreen> {
   final List<Map<String, dynamic>> _pageDetails = [
     {'name': const PendingTasksScreen(), 'title': "Pending Task "},
     {'name': const CompletedtaskScreen(), 'title': "Completed Task "},
+    {'name': const FavTaskScreen(), 'title': "Favourite  Task "},
   ];
 
   void _addTask() {
@@ -61,9 +63,6 @@ class _TabScreenState extends State<TabScreen> {
                 currentIndex: _selceltedPageindex,
                 onTap: (value) {
                   setState(() {
-                    if (value == 2) {
-                      return;
-                    }
                     _selceltedPageindex = value;
                   });
                 },
@@ -136,7 +135,7 @@ class _TabScreenState extends State<TabScreen> {
                             child: Container(
                               alignment: Alignment.center,
                               child: Text(
-                                '${state.completed.length}',
+                                '${state.favList.length}',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.center,

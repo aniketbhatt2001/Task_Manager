@@ -29,12 +29,12 @@ class DBService {
       onCreate: (db, version) {
         // Run the CREATE TABLE statement on the database.
         return db.execute(
-          'CREATE TABLE tasks(id TEXT PRIMARY KEY, title TEXT, isDone TEXT , deleted TEXT , desc TEXT, dateTime TEXT )',
+          'CREATE TABLE tasks(id TEXT PRIMARY KEY, title TEXT, isDone TEXT , deleted TEXT , desc TEXT, dateTime TEXT , fav TEXT)',
         );
       },
       // Set the version. This executes the onCreate function and provides a
       // path to perform database upgrades and downgrades.
-      version: 1,
+      version: 2,
     );
     ('getDbPath $absolutePath');
 
@@ -75,6 +75,7 @@ class DBService {
         desc: maps[i]['desc'] as String,
         isDone: maps[i]['isDone'] == '1' ? true : false,
         deleted: maps[i]['deleted'] == '1' ? true : false,
+        fav: maps[i]['fav'] == '1' ? true : false,
       );
     });
   }

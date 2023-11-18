@@ -9,36 +9,39 @@ class Task extends Equatable {
   String id;
   String dateTime;
   bool? isDone;
-
+  bool? fav;
   bool? deleted;
-  Task({
-    required this.title,
-    required this.dateTime,
-    required this.desc,
-    required this.id,
-    this.isDone,
-    this.deleted,
-  }) {
+  Task(
+      {required this.title,
+      required this.dateTime,
+      required this.desc,
+      required this.id,
+      this.isDone,
+      this.deleted,
+      this.fav}) {
     isDone = isDone ?? false;
     deleted = deleted ?? false;
+    fav = fav ?? false;
   }
 
-  Task copyWith(
-      {String? title,
-      String? desc,
-      bool? isDone,
-      bool? deleted,
-      bool? isFav,
-      String? id,
-      String? dateTime}) {
+  Task copyWith({
+    String? title,
+    String? desc,
+    bool? isDone,
+    bool? deleted,
+    bool? isFav,
+    String? id,
+    String? dateTime,
+    bool? fav,
+  }) {
     return Task(
-      dateTime: dateTime ?? this.dateTime,
-      desc: desc ?? this.desc,
-      title: title ?? this.title,
-      isDone: isDone ?? this.isDone,
-      deleted: deleted ?? this.deleted,
-      id: id ?? this.id,
-    );
+        dateTime: dateTime ?? this.dateTime,
+        desc: desc ?? this.desc,
+        title: title ?? this.title,
+        isDone: isDone ?? this.isDone,
+        deleted: deleted ?? this.deleted,
+        id: id ?? this.id,
+        fav: fav ?? this.fav);
   }
 
   Map<String, dynamic> toMap() {
@@ -49,6 +52,7 @@ class Task extends Equatable {
       'desc': desc,
       'isDone': isDone! ? '1' : '0',
       'deleted': deleted! ? '1' : '0',
+      'fav': fav! ? '1' : '0'
     };
   }
 
@@ -59,6 +63,7 @@ class Task extends Equatable {
       title: map['title'] as String,
       desc: map['desc'] as String,
       isDone: map['isDone'] == '1' ? true : false,
+      fav: map['fav'] == '1' ? true : false,
       deleted: map['deleted'] == '1' ? true : false,
     );
   }
@@ -70,11 +75,5 @@ class Task extends Equatable {
 
   @override
   // TODO: implement props
-  List<Object?> get props => [
-        title,
-        isDone,
-        deleted,
-        id,
-        desc,
-      ];
+  List<Object?> get props => [title, isDone, deleted, id, desc, fav, dateTime];
 }

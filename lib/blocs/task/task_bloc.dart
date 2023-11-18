@@ -10,7 +10,7 @@ part 'task_event.dart';
 part 'task_state.dart';
 
 class TaskBloc extends Bloc<TaskEvent, TaskState> {
-  TaskBloc() : super(TaskState(removedList: [])) {
+  TaskBloc() : super(const TaskState(removedList: [], favList: [])) {
     on<AddTaskEvent>((event, emit) {
       // TODO: implement event handler
 
@@ -28,6 +28,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     final _state = state;
     DBService.insertTask(event.task);
     emit(TaskState(
+        favList: _state.favList,
         completed: List.from(
           _state.completed,
         ),
@@ -40,6 +41,8 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     DBService.insertTask(event.task);
     RemovedDBService.deleteTask(event.task.id);
     emit(TaskState(
+        favList: _state.favList,
+        completed: _state.completed,
         pendingList: List.from(_state.pendingList)..add(event.task),
         removedList: state.removedList..remove(event.task)));
   }
@@ -60,11 +63,21 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       emit(TaskState(
           pendingList: List.from([...state.pendingList]),
           completed: List.from([...completed]),
+          favList: List.from([...state.favList]),
+          removedList: List.from([...state.removedList, event.task])));
+    } else if (state.favList.contains(event.task)) {
+      List<Task> favlist =
+          _state.favList.where((task) => task.id != taskId).toList();
+      emit(TaskState(
+          pendingList: List.from([...state.pendingList]),
+          completed: List.from([...state.favList]),
+          favList: List.from([...favlist]),
           removedList: List.from([...state.removedList, event.task])));
     } else {
       List<Task> pendingList =
           _state.pendingList.where((task) => task.id != taskId).toList();
       emit(TaskState(
+          favList: List.from([...state.favList]),
           pendingList: List.from([...pendingList]),
           completed: List.from([...state.completed]),
           removedList: List.from([...state.removedList, event.task])));
@@ -79,39 +92,44 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     final task = event.task;
     await DBService.updateTask(task);
 
-    // if(event.){}
-    if (event.task.isDone!) {
-      //  ('inisdie if');
-      List<Task> pendingTask = _state.pendingList.map((t) {
-        if (t.id == task.id) {
-          return task;
-        } else {
-          return t;
-        }
-      }).toList();
-      emit(TaskState(
-        pendingList: pendingTask
-          ..removeWhere((element) => element.id == task.id),
-        removedList: state.removedList,
-        completed: List.from([..._state.completed, event.task]),
-      ));
-    } else {
-      //  ('inisdie else');
-      List<Task> completedTasks = _state.completed.map((t) {
-        if (t.id == task.id) {
-          return task;
-        } else {
-          return t;
-        }
-      }).toList();
+    List<Task> updatedPendingList = _state.pendingList;
+    List<Task> updatedCompletedList = _state.completed;
+    List<Task> updatedFavList = _state.favList;
 
-      emit(TaskState(
-        pendingList: List.from([..._state.pendingList, event.task]),
-        removedList: state.removedList,
-        completed: completedTasks
-          ..removeWhere((element) => element.id == task.id),
-      ));
+    // Remove the task from other lists
+    updatedCompletedList =
+        updatedCompletedList.where((t) => t.id != task.id).toList();
+    updatedPendingList =
+        updatedPendingList.where((t) => t.id != task.id).toList();
+    updatedFavList = updatedFavList.where((t) => t.id != task.id).toList();
+
+    if (event.task.isDone!) {
+      // Add the task to the completed list
+      updatedCompletedList = List.from([...updatedCompletedList, event.task]);
+
+      // Check if the task is marked as fav and add it to the fav list
+      if (event.task.fav!) {
+        updatedFavList = List.from([...updatedFavList, event.task]);
+      }
+    } else {
+      // Add the task to the pending list
+      updatedPendingList = List.from([...updatedPendingList, event.task]);
+
+      // Check if the task is marked as fav and add it to the fav list
+      if (event.task.fav!) {
+        updatedFavList = List.from([...updatedFavList, event.task]);
+      }
     }
+    updatedPendingList.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+    updatedCompletedList.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+    updatedFavList.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+
+    emit(TaskState(
+      pendingList: List.from([...updatedPendingList]),
+      removedList: List.from([...state.removedList]),
+      favList: List.from([...updatedFavList]),
+      completed: List.from([...updatedCompletedList]),
+    ));
   }
 
   void fetchTasks(
@@ -122,6 +140,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     final tasks = await DBService.tasks();
     final removedTasks = await RemovedDBService.tasks();
     emit(TaskState(
+        favList: (tasks.where((element) => (element.fav!)).toList()),
         completed: (tasks.where((element) => (element.isDone!)).toList()),
         pendingList: (tasks.where((element) => !(element.isDone!)).toList()),
         removedList: removedTasks));
@@ -140,6 +159,10 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         _state.removedList.where((task) => task.id != taskId).toList();
 
     // Update the TaskState with the filtered task list
-    emit(TaskState(pendingList: state.pendingList, removedList: updatedTasks));
+    emit(TaskState(
+        pendingList: state.pendingList,
+        removedList: updatedTasks,
+        favList: state.favList,
+        completed: state.completed));
   }
 }

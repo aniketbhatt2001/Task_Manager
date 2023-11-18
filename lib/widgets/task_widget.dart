@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 
 import '../blocs/task/task_bloc.dart';
 
-enum TaskType { completed, pending }
+enum TaskType { completed, pending, favs }
 
 class MyTask extends StatefulWidget {
   final int index;
@@ -34,12 +34,19 @@ class _TaskState extends State<MyTask> {
       builder: (context, state) {
         final _task = widget.taskType == TaskType.completed
             ? state.completed[widget.index]
-            : state.pendingList[widget.index];
+            : widget.taskType == TaskType.pending
+                ? state.pendingList[widget.index]
+                : state.favList[widget.index];
         final taskBloc = context.read<TaskBloc>();
         bool isDone = _task.isDone ?? false;
-        if (widget.index == 1) {
-          print('${_task.title} ${_task.isDone}');
-        }
+        bool _isFav = _task.fav ?? false;
+        String originalDateTimeString = _task.dateTime;
+
+        // Parse the original date-time string
+        String formattedDate =
+            DateFormat('MMMMd').format(DateTime.parse(originalDateTimeString));
+
+        // Format the date in MM-dd format
 
         return Dismissible(
           direction: DismissDirection.horizontal,
@@ -81,7 +88,7 @@ class _TaskState extends State<MyTask> {
                         height: 10,
                       ),
                       Text(
-                        _task.dateTime,
+                        formattedDate,
                         style: const TextStyle(
                           color: Colors.black,
                           fontSize: 12,
@@ -92,6 +99,15 @@ class _TaskState extends State<MyTask> {
                     ],
                   ),
                 ),
+                IconButton(
+                    onPressed: () {
+                      taskBloc
+                          .add(UpdateTaskEvent(_task.copyWith(fav: !_isFav)));
+                    },
+                    icon: Icon(
+                      _isFav ? Icons.star : Icons.star_outline,
+                      color: Colors.black,
+                    )),
                 Container(
                   height: 10,
                   child: Checkbox(
@@ -101,7 +117,7 @@ class _TaskState extends State<MyTask> {
                       taskBloc.add(
                           UpdateTaskEvent(_task.copyWith(isDone: !isDone)));
                     },
-                    side: BorderSide(color: Colors.black, width: 2),
+                    side: const BorderSide(color: Colors.black, width: 2),
                   ),
                 ),
               ],

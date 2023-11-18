@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tasks_app/screens/my_drawer.dart';
+
 import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_tasks_app/models/task_model.dart';
@@ -11,15 +12,15 @@ import '../widgets/add_task.dart';
 
 import '../widgets/task_widget.dart';
 
-class PendingTasksScreen extends StatefulWidget {
-  static const name = 'task_screen';
-  const PendingTasksScreen({Key? key}) : super(key: key);
+class FavTaskScreen extends StatefulWidget {
+  static const name = 'fav_tasks';
+  const FavTaskScreen({Key? key}) : super(key: key);
 
   @override
-  State<PendingTasksScreen> createState() => _TasksScreenState();
+  State<FavTaskScreen> createState() => _TasksScreenState();
 }
 
-class _TasksScreenState extends State<PendingTasksScreen> {
+class _TasksScreenState extends State<FavTaskScreen> {
   final uuid = const Uuid();
 
   @override
@@ -28,19 +29,6 @@ class _TasksScreenState extends State<PendingTasksScreen> {
     super.initState();
     context.read<TaskBloc>().add(FetchTasksEvent());
   }
-
-  // void _addTask() {
-  //   showModalBottomSheet(
-  //     shape: const RoundedRectangleBorder(
-  //         borderRadius: BorderRadius.only(
-  //             topLeft: Radius.circular(12), topRight: Radius.circular(12))),
-  //     context: context,
-  //     builder: (ctx) {
-  //       return BlocProvider.value(
-  //           value: context.read<TaskBloc>(), child: AddTask());
-  //     },
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -54,26 +42,25 @@ class _TasksScreenState extends State<PendingTasksScreen> {
             child: CircularProgressIndicator(),
           );
         }
-
         return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Center(
               child: Chip(
                 label: Text(
-                  '${state.pendingList.length} Pending Tasks ',
+                  '${state.favList.length} Favourite Tasks ',
                 ),
               ),
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: state.pendingList.length,
+                itemCount: state.favList.length,
                 itemBuilder: (context, index) {
                   return Padding(
                     padding:
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                     child: MyTask(
-                      taskType: TaskType.pending,
+                      taskType: TaskType.favs,
                       index: index,
                     ),
                   );
