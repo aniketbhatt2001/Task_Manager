@@ -2,14 +2,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tasks_app/screens/my_drawer.dart';
-import 'package:flutter_tasks_app/widgets/completed_task.dart';
+
 import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_tasks_app/models/task_model.dart';
 
 import '../blocs/task/task_bloc.dart';
 import '../widgets/add_task.dart';
-import '../widgets/pending_task.dart';
+
 import '../widgets/task_widget.dart';
 
 class CompletedtaskScreen extends StatefulWidget {
@@ -64,7 +64,7 @@ class _TasksScreenState extends State<CompletedtaskScreen> {
                       index: index,
                     ),
                   );
-                },  
+                },
               ),
             )
           ],

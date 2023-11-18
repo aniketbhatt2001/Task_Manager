@@ -61,6 +61,9 @@ class _TabScreenState extends State<TabScreen> {
                 currentIndex: _selceltedPageindex,
                 onTap: (value) {
                   setState(() {
+                    if (value == 2) {
+                      return;
+                    }
                     _selceltedPageindex = value;
                   });
                 },
@@ -123,6 +126,34 @@ class _TabScreenState extends State<TabScreen> {
                         ],
                       ),
                       label: 'Completed Tasks '),
+                  BottomNavigationBarItem(
+                      icon: Stack(
+                        children: [
+                          const Icon(Icons.star),
+                          Positioned(
+                            bottom: 12,
+                            left: 14,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text(
+                                '${state.completed.length}',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 10),
+                              ),
+                              //  margin: EdgeInsets.only(left: 20, bottom: 5),
+                              height: 20,
+                              width: 20,
+                              decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(10)),
+                            ),
+                          )
+                        ],
+                      ),
+                      label: 'Favourite Tasks '),
                 ]);
           },
         ),

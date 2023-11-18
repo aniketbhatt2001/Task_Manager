@@ -13,7 +13,7 @@ import 'package:flutter_tasks_app/models/task_model.dart';
 import '../blocs/task/task_bloc.dart';
 import '../widgets/add_task.dart';
 import '../widgets/removed_task.dart';
-import '../widgets/pending_task.dart';
+
 
 class RecycleBin extends StatefulWidget {
   static const name = 'recycle_bin';

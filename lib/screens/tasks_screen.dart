@@ -8,7 +8,7 @@ import 'package:flutter_tasks_app/models/task_model.dart';
 
 import '../blocs/task/task_bloc.dart';
 import '../widgets/add_task.dart';
-import '../widgets/pending_task.dart';
+
 import '../widgets/task_widget.dart';
 
 class PendingTasksScreen extends StatefulWidget {

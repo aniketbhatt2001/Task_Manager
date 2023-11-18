@@ -10,6 +10,7 @@ class DBService {
   static Database? _database;
   static Future<Database> get database async {
     if (_database != null) return _database!;
+    print('retriving db...');
     _database = await initDatabase();
 
     return _database!;
